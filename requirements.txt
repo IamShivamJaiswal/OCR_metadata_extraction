@@ -1,0 +1,3 @@
+python run.py --input_image samp_1\samp_fmi_1-3.png --problem "list"
+
+python run.py --input_image samp_2\samp_fmi_2-3.png --problem "list"
