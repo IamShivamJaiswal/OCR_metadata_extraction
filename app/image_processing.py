@@ -94,15 +94,17 @@ class ImageProcessing:
         #print(pd_filter)
         for i in range(pd_filter.shape[0]-1):
             if pd_filter["uppercase_text"][pd_filter.index[i]]=="REPORT" and  pd_filter["uppercase_text"][pd_filter.index[i+1]]=="DATE":
-                x = min(pd_filter["top"][pd_filter.index[i]],pd_filter["top"][pd_filter.index[i+1]]) -10
-                h = max(pd_filter["height"][pd_filter.index[i]],pd_filter["height"][pd_filter.index[i+1]])*4+x +20
+                x = min(pd_filter["top"][pd_filter.index[i]],pd_filter["top"][pd_filter.index[i+1]]) 
+                h = max(pd_filter["height"][pd_filter.index[i]],pd_filter["height"][pd_filter.index[i+1]])
+                new_x = x+h + 5
+                new_h = x + h*4 +20
                 y = min(pd_filter["left"][pd_filter.index[i]],pd_filter["left"][pd_filter.index[i+1]]) -10 
                 w = pd_filter["width"][pd_filter.index[i+1]]+ pd_filter["left"][pd_filter.index[i+1]] + 20
                 #plt.imshow(img[x:h,y:w,:])
-                x = OCR.image_to_string(img[x:h,y:w,:])
-                x = x.split("\n\n")
+                x = OCR.image_to_string(img[new_x:new_h,y:w,:])
+                #x = x.split("\n\n")
                 #print("here")
-                if len(x)==2:
-                    print(x[0] ," : ",x[1])
+                if len(x)>5:
+                    print("Report Date" ," : ",x)
                 else:
                     print("Report Date not found")
