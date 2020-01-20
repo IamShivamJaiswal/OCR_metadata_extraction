@@ -84,11 +84,25 @@ class ImageProcessing:
                     word_list.extend(compress_word_list(temp_word_list))
         return word_list
     
-    # @staticmethod
-    # def get_vertical_inside_horizontal(,point_x_list):
-    #     for i in range(len(point_x_list)-1):
-    #         point_y_list = get_lines(self.gray_img[point_x_list[i]:point_x_list[i+1],:],kind="vertical")
-    #         #if len(point_y_list) >=2:
-    #         #draw_line(img[point_x_list[i]:point_x_list[i+1],:,:],point_y_list,kind="vertical")
-    #         text_list = self.extract_text(img[point_x_list[i]:point_x_list[i+1],:,:],point_y_list)
-    #         list_seperation_logic(text_list,len(point_y_list),alteration_list,rearrangement_list)
+    @staticmethod
+    def get_report_date(img):
+        pd = OCR.image_to_data(img)
+                
+        pd["uppercase_text"] = list(map(lambda x: str.upper(x) if type(x)==str else x ,pd["text"]))
+
+        pd_filter = pd[pd["uppercase_text"].isin(["REPORT","DATE"])]
+        #print(pd_filter)
+        for i in range(pd_filter.shape[0]-1):
+            if pd_filter["uppercase_text"][pd_filter.index[i]]=="REPORT" and  pd_filter["uppercase_text"][pd_filter.index[i+1]]=="DATE":
+                x = min(pd_filter["top"][pd_filter.index[i]],pd_filter["top"][pd_filter.index[i+1]]) -10
+                h = max(pd_filter["height"][pd_filter.index[i]],pd_filter["height"][pd_filter.index[i+1]])*4+x +20
+                y = min(pd_filter["left"][pd_filter.index[i]],pd_filter["left"][pd_filter.index[i+1]]) -10 
+                w = pd_filter["width"][pd_filter.index[i+1]]+ pd_filter["left"][pd_filter.index[i+1]] + 20
+                #plt.imshow(img[x:h,y:w,:])
+                x = OCR.image_to_string(img[x:h,y:w,:])
+                x = x.split("\n\n")
+                #print("here")
+                if len(x)==2:
+                    print(x[0] ," : ",x[1])
+                else:
+                    print("Report Date not found")

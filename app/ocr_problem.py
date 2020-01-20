@@ -11,9 +11,11 @@ class OCRProblem():
         self.args = args
 
     def run(self):
+        preprocess = PreProcess()
+        preprocess.read(self.args.input_image)
+
         if self.args.problem == "list":
-            preprocess = PreProcess()
-            preprocess.read(self.args.input_image)
+
             point_x_list = ImageProcessing.get_lines(preprocess.get_gray_img())
             #print(len(point_x_list))
             alteration_list,rearrangement_list = [],[]
@@ -24,3 +26,5 @@ class OCRProblem():
                 text_list = ImageProcessing.extract_text(preprocess.get_img()[point_x_list[i]:point_x_list[i+1],:,:],point_y_list)
                 list_seperation_logic(text_list,len(point_y_list),alteration_list,rearrangement_list,self.conf)
             get_csv_report(alteration_list,rearrangement_list,self.args.output_file)
+        elif self.args.problem.upper() == "REPORT DATE":
+            ImageProcessing.get_report_date(preprocess.get_img())
